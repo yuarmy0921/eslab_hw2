@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+#include "ThisThread.h"
 #include "mbed.h"
 #include "wifi_helper.h"
 #include "mbed-trace/mbed_trace.h"
+#include "stm32l475e_iot01_gyro.h"
+#include "stm32l475e_iot01_accelero.h"
+#include <cstdint>
+
 
 #if MBED_CONF_APP_USE_TLS_SOCKET
 #include "root_ca_cert.h"
@@ -30,15 +35,26 @@ class SocketDemo {
     static constexpr size_t MAX_NUMBER_OF_ACCESS_POINTS = 10;
     static constexpr size_t MAX_MESSAGE_RECEIVED_LENGTH = 100;
 
+/*
 #if MBED_CONF_APP_USE_TLS_SOCKET
     static constexpr size_t REMOTE_PORT = 443; // tls port
 #else
     static constexpr size_t REMOTE_PORT = 80; // standard HTTP port
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
+*/
+static constexpr size_t REMOTE_PORT = 6531;
 
 public:
+    int sample_num;
+    int16_t pDataXYZ[3];
+    int SCALE_MULTIPLIER = 1;
+    char acc_json[1024];
+    
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
+        sample_num = 0;
+        BSP_GYRO_Init();
+        BSP_ACCELERO_Init();
     }
 
     ~SocketDemo()
@@ -125,6 +141,22 @@ public:
         }
 
         printf("Demo concluded successfully \r\n");
+
+        while (1){
+            ++sample_num;
+            BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+            float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
+            z = pDataXYZ[2]*SCALE_MULTIPLIER;
+            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
+            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
+            int response = _socket.send(acc_json,len);
+            if (0 >= response){
+            printf("Error seding: %d\n", response);
+            }
+            ThisThread::sleep_for(100);
+        }
     }
 
 private:
