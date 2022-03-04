@@ -4,7 +4,7 @@ import socket
 import json
 import numpy as np
 import matplotlib.pyplot as plot
-HOST = '192.168.50.165' # IP address
+HOST = '192.168.175.63' # IP address
 PORT = 6531 # Port to listen on (use ports > 1023)
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
@@ -13,9 +13,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn, addr = s.accept()
     with conn:
         print("Connected at", addr)
-
+        conn.send(b'1')
         while True:
-            data = conn.recv(1024).decode('utf-8')
+            data = conn.recv(1024).decode('utf-8', errors='ignore')
+            #print(unicode(data, errors='replace'))
             print("Received from socket server:", data)
             
         if (data.count('{') != 1):

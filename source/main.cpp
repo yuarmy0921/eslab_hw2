@@ -42,6 +42,7 @@ class SocketDemo {
     static constexpr size_t REMOTE_PORT = 80; // standard HTTP port
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
 */
+
 static constexpr size_t REMOTE_PORT = 6531;
 
 public:
@@ -112,11 +113,13 @@ public:
         /* now we have to find where to connect */
 
         SocketAddress address;
-
+        const char* IP = "192.168.175.63";
+        address.set_ip_address(IP);
+/*
         if (!resolve_hostname(address)) {
             return;
         }
-
+*/
         address.set_port(REMOTE_PORT);
 
         /* we are connected to the network but since we're using a connection oriented
@@ -125,13 +128,16 @@ public:
         printf("Opening connection to remote port %d\r\n", REMOTE_PORT);
 
         result = _socket.connect(address);
+        /*
+        printf("%d", result);
         if (result != 0) {
             printf("Error! _socket.connect() returned: %d\r\n", result);
             return;
         }
+        */
 
         /* exchange an HTTP request and response */
-
+/*
         if (!send_http_request()) {
             return;
         }
@@ -139,7 +145,7 @@ public:
         if (!receive_http_response()) {
             return;
         }
-
+*/
         printf("Demo concluded successfully \r\n");
 
         while (1){

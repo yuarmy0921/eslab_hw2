@@ -58,8 +58,8 @@
 #define LPTICKER_DELAY_TICKS                                                    0                                                                                                // set by target:MCU_STM32L4
 #define MBED_CONF_ALT1250_PPP_BAUDRATE                                          115200                                                                                           // set by library:ALT1250_PPP
 #define MBED_CONF_ALT1250_PPP_PROVIDE_DEFAULT                                   0                                                                                                // set by library:ALT1250_PPP
-#define MBED_CONF_APP_HOSTNAME                                                  "ifconfig.io"                                                                                    // set by application
-#define MBED_CONF_APP_USE_TLS_SOCKET                                            1                                                                                                // set by application
+#define MBED_CONF_APP_HOSTNAME                                                  "192.168.175.63"                                                                                 // set by application
+#define MBED_CONF_APP_USE_TLS_SOCKET                                            0                                                                                                // set by application
 #define MBED_CONF_ATMEL_RF_ASSUME_SPACED_SPI                                    1                                                                                                // set by library:atmel-rf[STM]
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED                                       7500000                                                                                          // set by library:atmel-rf
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED_BYTE_SPACING                          250                                                                                              // set by library:atmel-rf
@@ -311,9 +311,9 @@
 #define MBED_CONF_NSAPI_ADD_EVENT_LISTENER_RETURN_CHANGE                        0                                                                                                // set by library:nsapi
 #define MBED_CONF_NSAPI_DEFAULT_MESH_TYPE                                       THREAD                                                                                           // set by library:nsapi
 #define MBED_CONF_NSAPI_DEFAULT_STACK                                           LWIP                                                                                             // set by library:nsapi
-#define MBED_CONF_NSAPI_DEFAULT_WIFI_PASSWORD                                   "305305abcd"                                                                                     // set by application[*]
+#define MBED_CONF_NSAPI_DEFAULT_WIFI_PASSWORD                                   "06130709"                                                                                       // set by application[*]
 #define MBED_CONF_NSAPI_DEFAULT_WIFI_SECURITY                                   WPA_WPA2                                                                                         // set by application[*]
-#define MBED_CONF_NSAPI_DEFAULT_WIFI_SSID                                       "esys305"                                                                                        // set by application[*]
+#define MBED_CONF_NSAPI_DEFAULT_WIFI_SSID                                       "yuarmy"                                                                                         // set by application[*]
 #define MBED_CONF_NSAPI_DNS_ADDRESSES_LIMIT                                     10                                                                                               // set by library:nsapi
 #define MBED_CONF_NSAPI_DNS_CACHE_SIZE                                          3                                                                                                // set by library:nsapi
 #define MBED_CONF_NSAPI_DNS_RESPONSE_WAIT_TIME                                  10000                                                                                            // set by library:nsapi
