@@ -58,8 +58,8 @@
 #define LPTICKER_DELAY_TICKS                                                    0                                                                                                // set by target:MCU_STM32L4
 #define MBED_CONF_ALT1250_PPP_BAUDRATE                                          115200                                                                                           // set by library:ALT1250_PPP
 #define MBED_CONF_ALT1250_PPP_PROVIDE_DEFAULT                                   0                                                                                                // set by library:ALT1250_PPP
-#define MBED_CONF_APP_HOSTNAME                                                  "192.168.50.165"                                                                                 // set by application
-#define MBED_CONF_APP_USE_TLS_SOCKET                                            0                                                                                                // set by application
+#define MBED_CONF_APP_HOSTNAME                                                  "ifconfig.io"                                                                                    // set by application
+#define MBED_CONF_APP_USE_TLS_SOCKET                                            1                                                                                                // set by application
 #define MBED_CONF_ATMEL_RF_ASSUME_SPACED_SPI                                    1                                                                                                // set by library:atmel-rf[STM]
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED                                       7500000                                                                                          // set by library:atmel-rf
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED_BYTE_SPACING                          250                                                                                              // set by library:atmel-rf

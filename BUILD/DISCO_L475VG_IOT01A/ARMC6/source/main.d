@@ -304,4 +304,5 @@ BUILD/DISCO_L475VG_IOT01A/ARMC6/source/main.o: source/main.cpp \
   BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/../Components/lsm6dsl/lsm6dsl.h \
   BSP_B-L475E-IOT01/Drivers/BSP/Components/lsm6dsl/../Common/accelero.h \
   BSP_B-L475E-IOT01/Drivers/BSP/Components/lsm6dsl/../Common/gyro.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01_accelero.h
+  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01_accelero.h \
+  include/root_ca_cert.h
