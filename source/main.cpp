@@ -114,13 +114,13 @@ public:
         /* now we have to find where to connect */
 
         SocketAddress address;
-        const char* IP = "192.168.50.226";
-        address.set_ip_address(IP);
-/*
+        // const char* IP = "192.168.50.226";
+        // address.set_ip_address(IP);
+
         if (!resolve_hostname(address)) {
             return;
         }
-*/
+
         address.set_port(REMOTE_PORT);
 
         /* we are connected to the network but since we're using a connection oriented
