@@ -48,6 +48,7 @@ static constexpr size_t REMOTE_PORT = 6531;
 public:
     int sample_num;
     int16_t pDataXYZ[3];
+    float pGyroDataXYZ[3];
     int SCALE_MULTIPLIER = 1;
     char acc_json[1024];
     
@@ -113,7 +114,7 @@ public:
         /* now we have to find where to connect */
 
         SocketAddress address;
-        const char* IP = "192.168.175.63";
+        const char* IP = "192.168.50.226";
         address.set_ip_address(IP);
 /*
         if (!resolve_hostname(address)) {
@@ -153,13 +154,18 @@ public:
             BSP_ACCELERO_AccGetXYZ(pDataXYZ);
             float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
             z = pDataXYZ[2]*SCALE_MULTIPLIER;
-            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
-            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
+            BSP_GYRO_GetXYZ(pGyroDataXYZ);
+            printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+            printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+            printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+            
+            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
+            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
             int response = _socket.send(acc_json,len);
             if (0 >= response){
-            printf("Error seding: %d\n", response);
+                printf("Error seding: %d\n", response);
             }
             ThisThread::sleep_for(100);
         }
