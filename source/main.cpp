@@ -68,7 +68,7 @@ public:
 
     void run()
     {
-        if (!_net) {
+        while (!_net) {
             printf("Error! No network interface found.\r\n");
             return;
         }
@@ -87,8 +87,8 @@ public:
 
         printf("Connecting to the network...\r\n");
 
-        nsapi_size_or_error_t result = _net->connect();
-        if (result != 0) {
+        // nsapi_size_or_error_t result = _net->connect();
+        while ((result = _net->connect()) != 0) {
             printf("Error! _net->connect() returned: %d\r\n", result);
             return;
         }
@@ -96,8 +96,8 @@ public:
         print_network_info();
 
         /* opening the socket only allocates resources */
-        result = _socket.open(_net);
-        if (result != 0) {
+        // result = _socket.open(_net);
+        while ((result = _socket.open(_net)) != 0) {
             printf("Error! _socket.open() returned: %d\r\n", result);
             return;
         }
