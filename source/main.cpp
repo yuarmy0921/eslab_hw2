@@ -86,8 +86,9 @@ public:
         /* connect will perform the action appropriate to the interface type to connect to the network */
 
         printf("Connecting to the network...\r\n");
-
+        
         // nsapi_size_or_error_t result = _net->connect();
+        nsapi_size_or_error_t result;
         while ((result = _net->connect()) != 0) {
             printf("Error! _net->connect() returned: %d\r\n", result);
             return;
