@@ -1,1 +1,3 @@
-請下載main.cpp及socket-server.py就好，謝謝! 因為mbed-os資料夾太大推不上來..
+Please download only main.cpp and socket-server.py because the mbed-os directory is empty.
+Please contact us to demonstrate the result if you couldn't run the program...
+Thank you!
