@@ -1,19 +1,8 @@
 [
     {
-        "module": "BSP_B-L475E-IOT01/Drivers",
-        "size": {
-            ".text": 1048,
-            ".data": 104,
-            ".bss": 84,
-            ".text-delta": 0,
-            ".data-delta": 0,
-            ".bss-delta": 0
-        }
-    },
-    {
         "module": "COMPONENT_ism43362/ISM43362",
         "size": {
-            ".text": 9993,
+            ".text": 9991,
             ".data": 0,
             ".bss": 2,
             ".text-delta": 0,
@@ -24,7 +13,7 @@
     {
         "module": "COMPONENT_ism43362/ISM43362Interface.o",
         "size": {
-            ".text": 5336,
+            ".text": 5334,
             ".data": 0,
             ".bss": 1312,
             ".text-delta": 0,
@@ -33,9 +22,20 @@
         }
     },
     {
+        "module": "HCSR04/hcsr04.o",
+        "size": {
+            ".text": 448,
+            ".data": 0,
+            ".bss": 0,
+            ".text-delta": 0,
+            ".data-delta": 0,
+            ".bss-delta": 0
+        }
+    },
+    {
         "module": "[lib]/c_w.l",
         "size": {
-            ".text": 17455,
+            ".text": 17589,
             ".data": 20,
             ".bss": 576,
             ".text-delta": 0,
@@ -46,7 +46,7 @@
     {
         "module": "[lib]/fz_wm.l",
         "size": {
-            ".text": 1538,
+            ".text": 1312,
             ".data": 0,
             ".bss": 0,
             ".text-delta": 0,
@@ -112,9 +112,9 @@
     {
         "module": "mbed-os/connectivity",
         "size": {
-            ".text": 15039,
-            ".data": 99,
-            ".bss": 141,
+            ".text": 188109,
+            ".data": 154,
+            ".bss": 332,
             ".text-delta": 0,
             ".data-delta": 0,
             ".bss-delta": 0
@@ -123,7 +123,7 @@
     {
         "module": "mbed-os/drivers",
         "size": {
-            ".text": 2540,
+            ".text": 2678,
             ".data": 0,
             ".bss": 928,
             ".text-delta": 0,
@@ -167,9 +167,9 @@
     {
         "module": "mbed-os/platform",
         "size": {
-            ".text": 8038,
-            ".data": 64,
-            ".bss": 361,
+            ".text": 8886,
+            ".data": 80,
+            ".bss": 401,
             ".text-delta": 0,
             ".data-delta": 0,
             ".bss-delta": 0
@@ -200,9 +200,9 @@
     {
         "module": "mbed-os/targets",
         "size": {
-            ".text": 21679,
+            ".text": 21402,
             ".data": 8,
-            ".bss": 1575,
+            ".bss": 1612,
             ".text-delta": 0,
             ".data-delta": 0,
             ".bss-delta": 0
@@ -211,7 +211,7 @@
     {
         "module": "source/main.o",
         "size": {
-            ".text": 1520,
+            ".text": 2969,
             ".data": 0,
             ".bss": 0,
             ".text-delta": 0,
@@ -221,9 +221,9 @@
     },
     {
         "summary": {
-            "static_ram": 21049,
+            "static_ram": 21200,
             "static_ram_delta": 0,
-            "total_flash": 103868,
+            "total_flash": 278367,
             "total_flash_delta": 0
         }
     }

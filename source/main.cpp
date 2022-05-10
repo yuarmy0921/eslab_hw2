@@ -15,13 +15,58 @@
  */
 
 #include "ThisThread.h"
+#include "PinNames.h"
 #include "mbed.h"
-#include "wifi_helper.h"
+#include "nsapi_types.h"
+#include "../include/wifi_helper.h"
 #include "mbed-trace/mbed_trace.h"
-#include "stm32l475e_iot01_gyro.h"
-#include "stm32l475e_iot01_accelero.h"
-#include <cstdint>
 
+#include <cstdint>
+#include "Callback.h"
+#include "DigitalInOut.h"
+#include "DigitalOut.h"
+#include "ThisThread.h"
+#include "events/EventQueue.h"
+
+// #include "nfc/ndef/MessageBuilder.h"
+// #include "nfc/ndef/common/URI.h"
+// #include "nfc/ndef/common/util.h"
+
+// #include "NFCEEPROM.h"
+
+// #include "EEPROMDriver.h"
+
+#include "hcsr04.h"
+#include <cstdio>
+
+// ultrasonic digital input and output
+#define TRIG PA_3
+#define ECHO PB_4
+
+// UART
+#define Tx PA_0
+#define Rx PA_1
+#define MAXIMUM_BUFFER_SIZE 32
+
+// I2C
+#define SCL PB_8
+#define SDA PB_9
+
+// wifi
+#define HOSTNAME "ifconfig.io"
+
+using events::EventQueue;
+
+// using mbed::nfc::NFCEEPROM;
+// using mbed::nfc::NFCEEPROMDriver;
+// using mbed::Span;
+
+// using mbed::nfc::ndef::MessageBuilder;
+// using mbed::nfc::ndef::common::URI;
+// using mbed::nfc::ndef::common::span_from_cstr;
+
+/* URL that will be written into the tag */
+const char url_string[] = "mbed.com";
 
 #if MBED_CONF_APP_USE_TLS_SOCKET
 #include "root_ca_cert.h"
@@ -48,14 +93,18 @@ static constexpr size_t REMOTE_PORT = 6531;
 public:
     int sample_num;
     int16_t pDataXYZ[3];
+    float pGyroDataXYZ[3];
     int SCALE_MULTIPLIER = 1;
     char acc_json[1024];
+    unsigned int dis;
+    EventQueue HCSR04queue;
     
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
         sample_num = 0;
-        BSP_GYRO_Init();
-        BSP_ACCELERO_Init();
+        // BSP_GYRO_Init();
+        // BSP_ACCELERO_Init();
+        
     }
 
     ~SocketDemo()
@@ -67,7 +116,7 @@ public:
 
     void run()
     {
-        if (!_net) {
+        while (!_net) {
             printf("Error! No network interface found.\r\n");
             return;
         }
@@ -86,19 +135,18 @@ public:
 
         printf("Connecting to the network...\r\n");
 
-        nsapi_size_or_error_t result = _net->connect();
-        if (result != 0) {
-            printf("Error! _net->connect() returned: %d\r\n", result);
-            return;
+        // nsapi_size_or_error_t result = _net->connect();
+        nsapi_size_or_error_t result;
+        while ((result = _net->connect()) != 0) {
+            printf("Error! _net->connect() returned: %d\r\nreconnect", result);
         }
 
         print_network_info();
 
         /* opening the socket only allocates resources */
-        result = _socket.open(_net);
-        if (result != 0) {
+        // result = _socket.open(_net);
+        while ((result = _socket.open(_net)) != 0) {
             printf("Error! _socket.open() returned: %d\r\n", result);
-            return;
         }
 
 #if MBED_CONF_APP_USE_TLS_SOCKET
@@ -107,19 +155,19 @@ public:
             printf("Error: _socket.set_root_ca_cert() returned %d\n", result);
             return;
         }
-        _socket.set_hostname(MBED_CONF_APP_HOSTNAME);
+        _socket.set_hostname(HOSTNAME);
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
 
         /* now we have to find where to connect */
 
         SocketAddress address;
-        const char* IP = "192.168.175.63";
-        address.set_ip_address(IP);
-/*
+        //const char* IP = "192.168.50.226";
+        //address.set_ip_address(IP);
+
         if (!resolve_hostname(address)) {
             return;
         }
-*/
+
         address.set_port(REMOTE_PORT);
 
         /* we are connected to the network but since we're using a connection oriented
@@ -141,34 +189,43 @@ public:
         if (!send_http_request()) {
             return;
         }
-
         if (!receive_http_response()) {
             return;
         }
 */
         printf("Demo concluded successfully \r\n");
 
+        HCSR04 ultra(TRIG, ECHO, HCSR04queue);
         while (1){
-            ++sample_num;
-            BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-            float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
-            z = pDataXYZ[2]*SCALE_MULTIPLIER;
-            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
-            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, sample_num);
-            int response = _socket.send(acc_json,len);
-            if (0 >= response){
-            printf("Error seding: %d\n", response);
-            }
-            ThisThread::sleep_for(100);
+            unsigned int dis = ultra.update();
+            int len = sprintf(acc_json, "distance: %d", dis);
+            int response = _socket.send(acc_json, len);
+            ThisThread::sleep_for(1000);
+            // ++sample_num;
+            // BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+            // float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
+            // z = pDataXYZ[2]*SCALE_MULTIPLIER;
+            // BSP_GYRO_GetXYZ(pGyroDataXYZ);
+            // printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+            // printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+            // printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+            
+            // int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            // (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
+            // printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            // (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
+            // int response = _socket.send(acc_json,len);
+            // if (0 >= response){
+            //     printf("Error seding: %d\n", response);
+            // }
+            // ThisThread::sleep_for(100);
         }
     }
 
 private:
     bool resolve_hostname(SocketAddress &address)
     {
-        const char hostname[] = MBED_CONF_APP_HOSTNAME;
+        const char hostname[] = HOSTNAME;
 
         /* get the host address */
         printf("\nResolve hostname %s\r\n", hostname);

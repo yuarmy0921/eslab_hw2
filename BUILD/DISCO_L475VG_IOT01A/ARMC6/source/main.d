@@ -5,51 +5,8 @@ BUILD/DISCO_L475VG_IOT01A/ARMC6/source/main.o: source/main.cpp \
   mbed-os/platform/include/platform/mbed_preprocessor.h \
   mbed-os/rtos/include/rtos/Kernel.h \
   mbed-os/rtos/include/rtos/mbed_rtos_types.h \
-  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/Include/cmsis_os2.h mbed-os/mbed.h \
-  mbed-os/platform/include/platform/mbed_version.h \
-  mbed-os/rtos/include/rtos/rtos.h \
-  mbed-os/rtos/include/rtos/internal/mbed_rtos_storage.h \
-  mbed-os/cmsis/device/rtos/include/mbed_rtx_storage.h \
-  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include/rtx_os.h \
-  mbed-os/cmsis/device/rtos/include/mbed_rtx_conf.h \
-  mbed-os/targets/TARGET_STM/mbed_rtx.h \
-  mbed-os/rtos/include/rtos/Thread.h \
-  mbed-os/rtos/include/rtos/internal/mbed_rtos1_types.h \
-  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include1/cmsis_os.h \
-  mbed-os/platform/include/platform/Callback.h \
-  mbed-os/platform/cxxsupport/mstd_cstddef \
-  mbed-os/platform/cxxsupport/mstd_new \
-  mbed-os/platform/include/platform/mbed_assert.h \
-  mbed-os/platform/cxxsupport/mstd_type_traits \
-  mbed-os/platform/cxxsupport/mstd_functional \
-  mbed-os/platform/cxxsupport/mstd_memory \
-  mbed-os/platform/cxxsupport/mstd_utility \
-  mbed-os/platform/cxxsupport/mstd_iterator \
-  mbed-os/platform/include/platform/NonCopyable.h \
-  mbed-os/rtos/include/rtos/Semaphore.h \
-  mbed-os/rtos/include/rtos/Mutex.h \
-  mbed-os/platform/include/platform/ScopedLock.h \
-  mbed-os/rtos/include/rtos/Mail.h mbed-os/rtos/include/rtos/Queue.h \
-  mbed-os/platform/include/platform/mbed_error.h \
-  mbed-os/platform/include/platform/mbed_retarget.h \
-  mbed-os/rtos/include/rtos/MemoryPool.h \
-  mbed-os/rtos/include/rtos/EventFlags.h \
-  mbed-os/rtos/include/rtos/ConditionVariable.h \
-  mbed-os/connectivity/netsocket/include/netsocket/nsapi.h \
-  mbed-os/connectivity/netsocket/include/netsocket/nsapi_types.h \
-  mbed-os/connectivity/netsocket/include/netsocket/SocketAddress.h \
-  mbed-os/connectivity/netsocket/include/netsocket/NetworkStack.h \
-  mbed-os/connectivity/netsocket/include/netsocket/NetworkInterface.h \
-  mbed-os/connectivity/netsocket/include/netsocket/DNS.h \
-  mbed-os/connectivity/netsocket/include/netsocket/EthInterface.h \
-  mbed-os/connectivity/netsocket/include/netsocket/WiFiInterface.h \
-  mbed-os/connectivity/netsocket/include/netsocket/WiFiAccessPoint.h \
-  mbed-os/connectivity/netsocket/include/netsocket/CellularInterface.h \
-  mbed-os/connectivity/netsocket/include/netsocket/MeshInterface.h \
-  mbed-os/connectivity/netsocket/include/netsocket/Socket.h \
-  mbed-os/connectivity/netsocket/include/netsocket/UDPSocket.h \
-  mbed-os/connectivity/netsocket/include/netsocket/InternetSocket.h \
-  mbed-os/platform/include/platform/mbed_atomic.h \
+  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/Include/cmsis_os2.h \
+  mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/TARGET_DISCO_L475VG_IOT01A/PinNames.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/cmsis.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/CMSIS/stm32l4xx.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/CMSIS/stm32l475xx.h \
@@ -134,6 +91,51 @@ BUILD/DISCO_L475VG_IOT01A/ARMC6/source/main.o: source/main.cpp \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/STM32L4xx_HAL_Driver/stm32l4xx_hal_usart_ex.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/STM32L4xx_HAL_Driver/stm32l4xx_hal_wwdg.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/cmsis_nvic.h \
+  mbed-os/targets/TARGET_STM/PinNamesTypes.h mbed-os/mbed.h \
+  mbed-os/platform/include/platform/mbed_version.h \
+  mbed-os/rtos/include/rtos/rtos.h \
+  mbed-os/rtos/include/rtos/internal/mbed_rtos_storage.h \
+  mbed-os/cmsis/device/rtos/include/mbed_rtx_storage.h \
+  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include/rtx_os.h \
+  mbed-os/cmsis/device/rtos/include/mbed_rtx_conf.h \
+  mbed-os/targets/TARGET_STM/mbed_rtx.h \
+  mbed-os/rtos/include/rtos/Thread.h \
+  mbed-os/rtos/include/rtos/internal/mbed_rtos1_types.h \
+  mbed-os/cmsis/CMSIS_5/CMSIS/RTOS2/RTX/Include1/cmsis_os.h \
+  mbed-os/platform/include/platform/Callback.h \
+  mbed-os/platform/cxxsupport/mstd_cstddef \
+  mbed-os/platform/cxxsupport/mstd_new \
+  mbed-os/platform/include/platform/mbed_assert.h \
+  mbed-os/platform/cxxsupport/mstd_type_traits \
+  mbed-os/platform/cxxsupport/mstd_functional \
+  mbed-os/platform/cxxsupport/mstd_memory \
+  mbed-os/platform/cxxsupport/mstd_utility \
+  mbed-os/platform/cxxsupport/mstd_iterator \
+  mbed-os/platform/include/platform/NonCopyable.h \
+  mbed-os/rtos/include/rtos/Semaphore.h \
+  mbed-os/rtos/include/rtos/Mutex.h \
+  mbed-os/platform/include/platform/ScopedLock.h \
+  mbed-os/rtos/include/rtos/Mail.h mbed-os/rtos/include/rtos/Queue.h \
+  mbed-os/platform/include/platform/mbed_error.h \
+  mbed-os/platform/include/platform/mbed_retarget.h \
+  mbed-os/rtos/include/rtos/MemoryPool.h \
+  mbed-os/rtos/include/rtos/EventFlags.h \
+  mbed-os/rtos/include/rtos/ConditionVariable.h \
+  mbed-os/connectivity/netsocket/include/netsocket/nsapi.h \
+  mbed-os/connectivity/netsocket/include/netsocket/nsapi_types.h \
+  mbed-os/connectivity/netsocket/include/netsocket/SocketAddress.h \
+  mbed-os/connectivity/netsocket/include/netsocket/NetworkStack.h \
+  mbed-os/connectivity/netsocket/include/netsocket/NetworkInterface.h \
+  mbed-os/connectivity/netsocket/include/netsocket/DNS.h \
+  mbed-os/connectivity/netsocket/include/netsocket/EthInterface.h \
+  mbed-os/connectivity/netsocket/include/netsocket/WiFiInterface.h \
+  mbed-os/connectivity/netsocket/include/netsocket/WiFiAccessPoint.h \
+  mbed-os/connectivity/netsocket/include/netsocket/CellularInterface.h \
+  mbed-os/connectivity/netsocket/include/netsocket/MeshInterface.h \
+  mbed-os/connectivity/netsocket/include/netsocket/Socket.h \
+  mbed-os/connectivity/netsocket/include/netsocket/UDPSocket.h \
+  mbed-os/connectivity/netsocket/include/netsocket/InternetSocket.h \
+  mbed-os/platform/include/platform/mbed_atomic.h \
   mbed-os/platform/include/platform/internal/mbed_atomic_impl.h \
   mbed-os/connectivity/netsocket/include/netsocket/SocketStats.h \
   mbed-os/platform/include/platform/SingletonPtr.h \
@@ -143,8 +145,6 @@ BUILD/DISCO_L475VG_IOT01A/ARMC6/source/main.o: source/main.cpp \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/objects.h \
   mbed-os/targets/TARGET_STM/PortNames.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/PeripheralNames.h \
-  mbed-os/targets/TARGET_STM/TARGET_STM32L4/TARGET_STM32L475xG/TARGET_DISCO_L475VG_IOT01A/PinNames.h \
-  mbed-os/targets/TARGET_STM/PinNamesTypes.h \
   mbed-os/targets/TARGET_STM/gpio_object.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/STM32L4xx_HAL_Driver/stm32l4xx_ll_usart.h \
   mbed-os/targets/TARGET_STM/TARGET_STM32L4/STM32Cube_FW/STM32L4xx_HAL_Driver/stm32l4xx_ll_lpuart.h \
@@ -297,11 +297,7 @@ BUILD/DISCO_L475VG_IOT01A/ARMC6/source/main.o: source/main.cpp \
   mbed-os/platform/include/platform/ScopedRamExecutionLock.h \
   mbed-os/platform/include/platform/mbed_stats.h \
   mbed-os/platform/include/platform/Stream.h \
-  mbed-os/platform/include/platform/FileLike.h include/wifi_helper.h \
+  mbed-os/platform/include/platform/FileLike.h \
+  source/../include/wifi_helper.h \
   mbed-os/platform/mbed-trace/include/mbed-trace/mbed_trace.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01_gyro.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/../Components/lsm6dsl/lsm6dsl.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/Components/lsm6dsl/../Common/accelero.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/Components/lsm6dsl/../Common/gyro.h \
-  BSP_B-L475E-IOT01/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01_accelero.h
+  HCSR04/hcsr04.h include/root_ca_cert.h
