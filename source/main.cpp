@@ -134,11 +134,20 @@ public:
         /* connect will perform the action appropriate to the interface type to connect to the network */
 
         printf("Connecting to the network...\r\n");
+<<<<<<< HEAD
 
         // nsapi_size_or_error_t result = _net->connect();
         nsapi_size_or_error_t result;
         while ((result = _net->connect()) != 0) {
             printf("Error! _net->connect() returned: %d\r\nreconnect", result);
+=======
+        
+        // nsapi_size_or_error_t result = _net->connect();
+        nsapi_size_or_error_t result;
+        while ((result = _net->connect()) != 0) {
+            printf("Error! _net->connect() returned: %d\r\n", result);
+            return;
+>>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
         }
 
         print_network_info();
@@ -161,8 +170,13 @@ public:
         /* now we have to find where to connect */
 
         SocketAddress address;
+<<<<<<< HEAD
         //const char* IP = "192.168.50.226";
         //address.set_ip_address(IP);
+=======
+        // const char* IP = "192.168.50.226";
+        // address.set_ip_address(IP);
+>>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
 
         if (!resolve_hostname(address)) {
             return;
@@ -197,6 +211,7 @@ public:
 
         HCSR04 ultra(TRIG, ECHO, HCSR04queue);
         while (1){
+<<<<<<< HEAD
             unsigned int dis = ultra.update();
             int len = sprintf(acc_json, "distance: %d", dis);
             int response = _socket.send(acc_json, len);
@@ -219,6 +234,26 @@ public:
             //     printf("Error seding: %d\n", response);
             // }
             // ThisThread::sleep_for(100);
+=======
+            ++sample_num;
+            BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+            float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
+            z = pDataXYZ[2]*SCALE_MULTIPLIER;
+            BSP_GYRO_GetXYZ(pGyroDataXYZ);
+            printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
+            printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
+            printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
+            
+            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
+            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
+            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
+            int response = _socket.send(acc_json,len);
+            if (0 >= response){
+                printf("Error seding: %d\n", response);
+            }
+            ThisThread::sleep_for(100);
+>>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
         }
     }
 
