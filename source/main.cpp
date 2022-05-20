@@ -42,6 +42,10 @@
 // ultrasonic digital input and output
 #define TRIG PA_3
 #define ECHO PB_4
+#define TRIG_RIGHT PA_4
+#define ECHO_RIGHT PB_1
+#define TRIG_LEFT PB_2
+#define ECHO_LEFT PA_15
 
 // UART
 #define Tx PA_0
@@ -53,7 +57,7 @@
 #define SDA PB_9
 
 // wifi
-#define HOSTNAME "ifconfig.io"
+#define HOSTNAME "192.168.50.226"
 
 using events::EventQueue;
 
@@ -98,6 +102,8 @@ public:
     char acc_json[1024];
     unsigned int dis;
     EventQueue HCSR04queue;
+    EventQueue HCSR04queue_left;
+    EventQueue HCSR04queue_right;
     
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
@@ -134,20 +140,11 @@ public:
         /* connect will perform the action appropriate to the interface type to connect to the network */
 
         printf("Connecting to the network...\r\n");
-<<<<<<< HEAD
 
         // nsapi_size_or_error_t result = _net->connect();
         nsapi_size_or_error_t result;
         while ((result = _net->connect()) != 0) {
             printf("Error! _net->connect() returned: %d\r\nreconnect", result);
-=======
-        
-        // nsapi_size_or_error_t result = _net->connect();
-        nsapi_size_or_error_t result;
-        while ((result = _net->connect()) != 0) {
-            printf("Error! _net->connect() returned: %d\r\n", result);
-            return;
->>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
         }
 
         print_network_info();
@@ -168,15 +165,9 @@ public:
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
 
         /* now we have to find where to connect */
-
         SocketAddress address;
-<<<<<<< HEAD
         //const char* IP = "192.168.50.226";
         //address.set_ip_address(IP);
-=======
-        // const char* IP = "192.168.50.226";
-        // address.set_ip_address(IP);
->>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
 
         if (!resolve_hostname(address)) {
             return;
@@ -189,7 +180,11 @@ public:
 
         printf("Opening connection to remote port %d\r\n", REMOTE_PORT);
 
-        result = _socket.connect(address);
+        while((result = _socket.connect(address)) != 0){
+            // ThisThread::sleep_for(1000);
+            printf("Error! _socket.connect() returned: %d\r\n", result);
+
+        };
         /*
         printf("%d", result);
         if (result != 0) {
@@ -210,12 +205,16 @@ public:
         printf("Demo concluded successfully \r\n");
 
         HCSR04 ultra(TRIG, ECHO, HCSR04queue);
+        HCSR04 ultra_left(TRIG_LEFT, ECHO_RIGHT, HCSR04queue_left);
+        HCSR04 ultra_right(TRIG_RIGHT, ECHO_RIGHT, HCSR04queue_right);
         while (1){
-<<<<<<< HEAD
             unsigned int dis = ultra.update();
-            int len = sprintf(acc_json, "distance: %d", dis);
-            int response = _socket.send(acc_json, len);
+            unsigned int dis_left = ultra_left.update();
+            unsigned int dis_right = ultra_right.update();
             ThisThread::sleep_for(1000);
+            int len = sprintf(acc_json, "distance: %d, %d, %d", dis, dis_right, dis_left);
+            printf("%s\n", acc_json);
+            int response = _socket.send(acc_json, len);
             // ++sample_num;
             // BSP_ACCELERO_AccGetXYZ(pDataXYZ);
             // float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
@@ -234,26 +233,6 @@ public:
             //     printf("Error seding: %d\n", response);
             // }
             // ThisThread::sleep_for(100);
-=======
-            ++sample_num;
-            BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-            float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
-            z = pDataXYZ[2]*SCALE_MULTIPLIER;
-            BSP_GYRO_GetXYZ(pGyroDataXYZ);
-            printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
-            printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);
-            printf("GYRO_Z = %.2f\n", pGyroDataXYZ[2]);
-            
-            int len = sprintf(acc_json,"{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
-            printf("{\"x\":%f,\"y\":%f,\"z\":%f,\"gx\":%f,\"gy\":%f,\"gz\":%f,\"s\":%d}",(float)((int)(x*10000))/10000,
-            (float)((int)(y*10000))/10000, (float)((int)(z*10000))/10000, pGyroDataXYZ[0], pGyroDataXYZ[1], pGyroDataXYZ[2], sample_num);
-            int response = _socket.send(acc_json,len);
-            if (0 >= response){
-                printf("Error seding: %d\n", response);
-            }
-            ThisThread::sleep_for(100);
->>>>>>> 4ebfb68e2e924ad97a91bfab53c02907bc8ed848
         }
     }
 
@@ -385,10 +364,8 @@ int main() {
 #ifdef MBED_CONF_MBED_TRACE_ENABLE
     mbed_trace_init();
 #endif
-
     SocketDemo *example = new SocketDemo();
     MBED_ASSERT(example);
     example->run();
-
     return 0;
 }
