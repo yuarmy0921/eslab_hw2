@@ -42,22 +42,24 @@
 // ultrasonic digital input and output
 #define TRIG PA_3
 #define ECHO PB_4
-#define TRIG_RIGHT PA_4
-#define ECHO_RIGHT PB_1
+#define TRIG_RIGHT PA_7
+#define ECHO_RIGHT PB_0
 #define TRIG_LEFT PB_2
 #define ECHO_LEFT PA_15
+#define TRIG_UP PB_8
+#define ECHO_UP PB_9
 
 // UART
-#define Tx PA_0
-#define Rx PA_1
+#define TRIG_BACK PA_5
+#define ECHO_BACK PA_6
 #define MAXIMUM_BUFFER_SIZE 32
 
 // I2C
-#define SCL PB_8
-#define SDA PB_9
+// #define SCL PB_8
+// #define SDA PB_9
 
 // wifi
-#define HOSTNAME "192.168.50.226"
+#define HOSTNAME "192.168.43.85"
 
 using events::EventQueue;
 
@@ -104,6 +106,8 @@ public:
     EventQueue HCSR04queue;
     EventQueue HCSR04queue_left;
     EventQueue HCSR04queue_right;
+    EventQueue HCSR04queue_up;
+    EventQueue HCSR04queue_back;
     
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
@@ -205,14 +209,19 @@ public:
         printf("Demo concluded successfully \r\n");
 
         HCSR04 ultra(TRIG, ECHO, HCSR04queue);
-        HCSR04 ultra_left(TRIG_LEFT, ECHO_RIGHT, HCSR04queue_left);
+        HCSR04 ultra_left(TRIG_LEFT, ECHO_LEFT, HCSR04queue_left);
         HCSR04 ultra_right(TRIG_RIGHT, ECHO_RIGHT, HCSR04queue_right);
+        HCSR04 ultra_up(TRIG_UP, ECHO_UP, HCSR04queue_up);
+        HCSR04 ultra_back(TRIG_BACK, ECHO_BACK, HCSR04queue_back);
         while (1){
+            printf("Here!\n");
             unsigned int dis = ultra.update();
             unsigned int dis_left = ultra_left.update();
             unsigned int dis_right = ultra_right.update();
-            ThisThread::sleep_for(1000);
-            int len = sprintf(acc_json, "distance: %d, %d, %d", dis, dis_right, dis_left);
+            unsigned int dis_up = ultra_up.update();
+            unsigned int dis_back = ultra_back.update();
+            ThisThread::sleep_for(50);
+            int len = sprintf(acc_json, "distance: %d %d %d %d %d", dis, dis_right, dis_left, dis_up, dis_back);
             printf("%s\n", acc_json);
             int response = _socket.send(acc_json, len);
             // ++sample_num;
