@@ -59,7 +59,7 @@
 // #define SDA PB_9
 
 // wifi
-#define HOSTNAME "192.168.43.85"
+#define HOSTNAME "192.168.50.226"
 
 using events::EventQueue;
 
@@ -222,6 +222,7 @@ public:
             unsigned int dis_back = ultra_back.update();
             ThisThread::sleep_for(50);
             int len = sprintf(acc_json, "distance: %d %d %d %d %d", dis, dis_right, dis_left, dis_up, dis_back);
+            // int len = sprintf(acc_json, "distance: %d", dis_back);
             printf("%s\n", acc_json);
             int response = _socket.send(acc_json, len);
             // ++sample_num;
