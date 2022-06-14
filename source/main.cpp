@@ -28,13 +28,20 @@
 #include "ThisThread.h"
 #include "events/EventQueue.h"
 
-// #include "nfc/ndef/MessageBuilder.h"
-// #include "nfc/ndef/common/URI.h"
-// #include "nfc/ndef/common/util.h"
+// NFC
+#include "MessageParser.h"
+#include "NFCEEPROMDriver.h"
+#include "Record.h"
+#include "nfc/ndef/MessageBuilder.h"
+#include "nfc/ndef/MessageParser.h"
+#include "nfc/ndef/common/SimpleMessageParser.h"
+#include "nfc/ndef/common/URI.h"
+#include "nfc/ndef/common/util.h"
 
-// #include "NFCEEPROM.h"
-
-// #include "EEPROMDriver.h"
+#include "NFC.h"
+#include "m24sr_driver.h"
+#include "NFCEEPROM.h"
+#include "EEPROMDriver.h"
 
 #include "hcsr04.h"
 #include <cstdio>
@@ -63,13 +70,24 @@
 
 using events::EventQueue;
 
-// using mbed::nfc::NFCEEPROM;
-// using mbed::nfc::NFCEEPROMDriver;
-// using mbed::Span;
+// NFC
+using mbed::nfc::NFCEEPROM;
+using mbed::nfc::NFCEEPROMDriver;
+using mbed::Span;
 
-// using mbed::nfc::ndef::MessageBuilder;
-// using mbed::nfc::ndef::common::URI;
-// using mbed::nfc::ndef::common::span_from_cstr;
+using mbed::nfc::ndef::MessageBuilder;
+using mbed::nfc::ndef::MessageParser;
+
+using mbed::nfc::ndef::Record;
+using mbed::nfc::ndef::RecordType;
+using mbed::nfc::ndef::RecordID;
+
+using mbed::nfc::ndef::common::SimpleMessageParser;
+using mbed::nfc::ndef::common::URI; // uri
+using mbed::nfc::ndef::common::Text; // text
+using mbed::nfc::ndef::common::Mime;
+using mbed::nfc::ndef::common::span_from_cstr;
+
 
 /* URL that will be written into the tag */
 const char url_string[] = "mbed.com";
@@ -81,6 +99,157 @@ const char url_string[] = "mbed.com";
 #error "mbed-os-example-tls-socket requires a device which supports TRNG"
 #endif
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
+
+struct ParserDelegate: SimpleMessageParser::Delegate {
+    virtual void on_parsing_started()
+    {
+        printf("parsing started\r\n");
+    }
+
+    virtual void on_text_parsed(const Text &text, const RecordID &)
+    {
+        printf("Text record parsed.\r\n");
+        printf(
+            "\tlanguage: %.*s\r\n",
+            text.get_language_code().size(), text.get_language_code().data()
+        );
+        printf("\ttext: %.*s\r\n",  text.get_text().size(), text.get_text().data());
+    }
+
+    virtual void on_uri_parsed(const URI &uri, const RecordID &)
+    {
+        printf("URI parsed.\r\n");
+        printf("\tid: %d\r\n", uri.get_id());
+        printf("\tvalue: %.*s\r\n",  uri.get_uri_field().size(), uri.get_uri_field().data());
+    }
+
+    virtual void on_mime_parsed(const Mime &mime, const RecordID &)
+    {
+        printf("Mime object parsed.\r\n");
+        printf("\ttype: %.*s\r\n", mime.get_mime_type().size(), mime.get_mime_type().data());
+        printf("\tcontent size: %d\r\n", mime.get_mime_content().size());
+    }
+
+    virtual void on_unknown_record_parsed(const Record &record)
+    {
+        printf("Unknown record parsed.\r\n");
+        printf(
+            "\ttype: %d, type_value: %.*s\r\n",
+            record.type.tnf, record.type.value.size(), record.type.value.data()
+        );
+        printf(
+            "\tpayload size: %d, payload: %.*s\r\n",
+            record.payload.size(), record.payload.size(), record.payload.data()
+        );
+    }
+
+    virtual void on_parsing_terminated()
+    {
+        printf("parsing terminated\r\n");
+    }
+
+    virtual void on_parsing_error(MessageParser::error_t error)
+    {
+        printf("Parsing error: %d\r\n", error);
+    }
+};
+
+class EEPROMExample : mbed::nfc::NFCEEPROM::Delegate
+{
+public:
+    EEPROMExample(events::EventQueue& queue, NFCEEPROMDriver& eeprom_driver) :
+        _ndef_buffer(),
+        _eeprom(&eeprom_driver, &queue, _ndef_buffer),
+        _queue(queue),
+        _parser(),
+        _delegate()
+    { }
+
+    void initialize() {
+        if (_eeprom.initialize() != NFC_OK) {
+            printf("failed to initialise\r\n");
+            _queue.break_dispatch();
+        }
+
+        _eeprom.set_delegate(this); //NFCEEPROM
+        _parser.set_delegate(&_delegate);  // SimpleMessageParser
+    }
+
+    void run() {
+        if (_eeprom.initialize() != NFC_OK) {
+            printf("failed to initialise\r\n");
+            _queue.break_dispatch();
+        }
+
+        _eeprom.set_delegate(this); //NFCEEPROM
+        _parser.set_delegate(&_delegate);  // SimpleMessageParser
+
+        // _queue.call(&_eeprom, &NFCEEPROM::read_ndef_message);
+        // _queue.call(&_eeprom, &NFCEEPROM::erase_ndef_message);
+        // _queue.dispatch_forever();
+        _queue.call(&_eeprom, &NFCEEPROM::read_ndef_message);
+        // _queue.dispatch_once();
+        
+    }
+
+private:
+    virtual void on_ndef_message_written(nfc_err_t result) {
+        if (result == NFC_OK) {
+            printf("message written successfully\r\n");
+        } else {
+            printf("failed to write (error: %d)\r\n", result);
+        }
+
+        // _queue.call(&_eeprom, &NFCEEPROM::read_ndef_message);
+    }
+
+    virtual void on_ndef_message_read(nfc_err_t result) {
+        if (result == NFC_OK) {
+            printf("message read successfully\r\n");
+
+        } else {
+            printf("failed to read (error: %d)\r\n", result);
+        }
+
+        ThisThread::sleep_for(5000);
+        // _queue.call(&_eeprom, &NFCEEPROM::erase_ndef_message);
+        _queue.call(&_eeprom, &NFCEEPROM::read_ndef_message);
+        
+    }
+
+    virtual void on_ndef_message_erased(nfc_err_t result) {
+        printf("Erase result: %d\n", result);
+    }
+
+    virtual void parse_ndef_message(const Span<const uint8_t> &buffer) {
+        printf("Received an ndef message of size %d\r\n", buffer.size());
+        if (buffer.size() > 0) _parser.parse(buffer); // Parse NDEF message
+    }
+
+    virtual size_t build_ndef_message(const Span<uint8_t> &buffer) {
+        printf("Building an ndef message\r\n");
+
+        /* create a message containing the URL */
+
+        MessageBuilder builder(buffer);
+
+        /* URI expected a non-null terminated string  so we use a helper function that casts
+         * the pointer into a Span of size smaller by one */
+        URI uri(URI::HTTPS_WWW, span_from_cstr(url_string));
+
+        uri.append_as_record(builder, true);
+
+        return builder.get_message().size();
+    }
+
+private:
+    uint8_t _ndef_buffer[2048];
+    NFCEEPROM _eeprom;
+    EventQueue& _queue;
+
+    SimpleMessageParser _parser;
+    ParserDelegate _delegate;
+};
 
 class SocketDemo {
     static constexpr size_t MAX_NUMBER_OF_ACCESS_POINTS = 10;
@@ -108,6 +277,10 @@ public:
     EventQueue HCSR04queue_right;
     EventQueue HCSR04queue_up;
     EventQueue HCSR04queue_back;
+
+    EventQueue NFCqueue;
+    NFCEEPROMDriver& eeprom_driver = get_eeprom_driver(NFCqueue);
+    
     
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
@@ -213,6 +386,11 @@ public:
         HCSR04 ultra_right(TRIG_RIGHT, ECHO_RIGHT, HCSR04queue_right);
         HCSR04 ultra_up(TRIG_UP, ECHO_UP, HCSR04queue_up);
         HCSR04 ultra_back(TRIG_BACK, ECHO_BACK, HCSR04queue_back);
+
+        EEPROMExample example(NFCqueue, eeprom_driver);
+        example.initialize();
+        NFCqueue.dispatch_forever();
+
         while (1){
             printf("Here!\n");
             unsigned int dis = ultra.update();
@@ -220,6 +398,8 @@ public:
             unsigned int dis_right = ultra_right.update();
             unsigned int dis_up = ultra_up.update();
             unsigned int dis_back = ultra_back.update();
+            NFCqueue.call(&eeprom_driver, &NFCEEPROM::read_ndef_message);
+            
             ThisThread::sleep_for(50);
             int len = sprintf(acc_json, "distance: %d %d %d %d %d", dis, dis_right, dis_left, dis_up, dis_back);
             // int len = sprintf(acc_json, "distance: %d", dis_back);
