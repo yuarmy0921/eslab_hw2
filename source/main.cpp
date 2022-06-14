@@ -100,6 +100,9 @@ const char url_string[] = "mbed.com";
 #endif
 #endif // MBED_CONF_APP_USE_TLS_SOCKET
 
+char ndef_msg[32];
+int ndef_len;
+
 struct ParserDelegate: SimpleMessageParser::Delegate {
     virtual void on_parsing_started()
     {
@@ -114,6 +117,7 @@ struct ParserDelegate: SimpleMessageParser::Delegate {
             text.get_language_code().size(), text.get_language_code().data()
         );
         printf("\ttext: %.*s\r\n",  text.get_text().size(), text.get_text().data());
+        ndef_len = sprintf(ndef_msg, "%.*s\n", text.get_text().size(), text.get_text().data());
     }
 
     virtual void on_uri_parsed(const URI &uri, const RecordID &)
@@ -399,12 +403,13 @@ public:
             unsigned int dis_up = ultra_up.update();
             unsigned int dis_back = ultra_back.update();
             NFCqueue.call(&eeprom_driver, &NFCEEPROM::read_ndef_message);
-            
+
             ThisThread::sleep_for(50);
             int len = sprintf(acc_json, "distance: %d %d %d %d %d", dis, dis_right, dis_left, dis_up, dis_back);
             // int len = sprintf(acc_json, "distance: %d", dis_back);
             printf("%s\n", acc_json);
             int response = _socket.send(acc_json, len);
+            response = _socket.send(ndef_msg, ndef_len);
             // ++sample_num;
             // BSP_ACCELERO_AccGetXYZ(pDataXYZ);
             // float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
