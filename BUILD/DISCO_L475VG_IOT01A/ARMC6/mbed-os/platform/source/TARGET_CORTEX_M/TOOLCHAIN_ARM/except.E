@@ -1,11 +1,11 @@
-# 1 "./mbed-os/platform/source/TARGET_CORTEX_M/TOOLCHAIN_ARM/except.S"
+# 1 ".\\mbed-os\\platform\\source\\TARGET_CORTEX_M\\TOOLCHAIN_ARM\\except.S"
 # 1 "<built-in>" 1
-# 395 "<built-in>"
-# 1 "./BUILD/DISCO_L475VG_IOT01A/ARMC6/mbed_config.h" 1
-# 396 "<built-in>" 2
-# 1 "./mbed-os/platform/source/TARGET_CORTEX_M/TOOLCHAIN_ARM/except.S" 2
+# 396 "<built-in>"
+# 1 "./BUILD/DISCO_L475VG_IOT01A/ARMC6\\mbed_config.h" 1
+# 397 "<built-in>" 2
+# 1 ".\\mbed-os\\platform\\source\\TARGET_CORTEX_M\\TOOLCHAIN_ARM\\except.S" 2
 ;
-# 30 "./mbed-os/platform/source/TARGET_CORTEX_M/TOOLCHAIN_ARM/except.S"
+# 30 ".\\mbed-os\\platform\\source\\TARGET_CORTEX_M\\TOOLCHAIN_ARM\\except.S"
 FAULT_TYPE_HARD_FAULT EQU 0x10
 FAULT_TYPE_MEMMANAGE_FAULT EQU 0x20
 FAULT_TYPE_BUS_FAULT EQU 0x30

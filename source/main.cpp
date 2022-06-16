@@ -20,6 +20,7 @@
 #include "nsapi_types.h"
 #include "../include/wifi_helper.h"
 #include "mbed-trace/mbed_trace.h"
+#include "stm32l475e_iot01_accelero.h"
 
 #include <cstdint>
 #include "Callback.h"
@@ -39,9 +40,9 @@
 #include "nfc/ndef/common/util.h"
 
 #include "NFC.h"
-#include "m24sr_driver.h"
 #include "NFCEEPROM.h"
 #include "EEPROMDriver.h"
+// #include "../mbed-os/connectivity/drivers/nfc/TARGET_M24SR/include/nfc/m24sr_driver.h"
 
 #include "hcsr04.h"
 #include <cstdio>
@@ -66,7 +67,8 @@
 // #define SDA PB_9
 
 // wifi
-#define HOSTNAME "192.168.50.226"
+// #define HOSTNAME "192.168.50.226"
+#define HOSTNAME "192.168.43.85"
 
 using events::EventQueue;
 
@@ -117,7 +119,7 @@ struct ParserDelegate: SimpleMessageParser::Delegate {
             text.get_language_code().size(), text.get_language_code().data()
         );
         printf("\ttext: %.*s\r\n",  text.get_text().size(), text.get_text().data());
-        ndef_len = sprintf(ndef_msg, "%.*s\n", text.get_text().size(), text.get_text().data());
+        ndef_len = sprintf(ndef_msg, "NFC: %.*s\n", text.get_text().size(), text.get_text().data());
     }
 
     virtual void on_uri_parsed(const URI &uri, const RecordID &)
@@ -179,6 +181,10 @@ public:
         _parser.set_delegate(&_delegate);  // SimpleMessageParser
     }
 
+    void update() {
+        _queue.call(&_eeprom, &NFCEEPROM::read_ndef_message);
+    }
+ 
     void run() {
         if (_eeprom.initialize() != NFC_OK) {
             printf("failed to initialise\r\n");
@@ -282,15 +288,16 @@ public:
     EventQueue HCSR04queue_up;
     EventQueue HCSR04queue_back;
 
-    EventQueue NFCqueue;
-    NFCEEPROMDriver& eeprom_driver = get_eeprom_driver(NFCqueue);
+    // EventQueue NFCqueue;
+    // NFCEEPROMDriver& eeprom_driver = get_eeprom_driver(NFCqueue);
+    Thread nfc_t;
     
     
     SocketDemo() : _net(NetworkInterface::get_default_instance())
     {
         sample_num = 0;
         // BSP_GYRO_Init();
-        // BSP_ACCELERO_Init();
+        BSP_ACCELERO_Init();
         
     }
 
@@ -384,16 +391,24 @@ public:
         }
 */
         printf("Demo concluded successfully \r\n");
-
-        HCSR04 ultra(TRIG, ECHO, HCSR04queue);
+        printf("00\n");
+        
+        printf("01\n");
         HCSR04 ultra_left(TRIG_LEFT, ECHO_LEFT, HCSR04queue_left);
+        printf("02\n");
         HCSR04 ultra_right(TRIG_RIGHT, ECHO_RIGHT, HCSR04queue_right);
+        printf("03\n");
         HCSR04 ultra_up(TRIG_UP, ECHO_UP, HCSR04queue_up);
+        printf("04\n");
         HCSR04 ultra_back(TRIG_BACK, ECHO_BACK, HCSR04queue_back);
+        HCSR04 ultra(TRIG, ECHO, HCSR04queue);
 
-        EEPROMExample example(NFCqueue, eeprom_driver);
-        example.initialize();
-        NFCqueue.dispatch_forever();
+        // printf("%d\n", 1);
+        // EEPROMExample example(NFCqueue, eeprom_driver);
+        // printf("2\n");
+        // example.initialize();
+        // printf("3\n");
+        // NFCqueue.dispatch_forever();
 
         while (1){
             printf("Here!\n");
@@ -402,18 +417,18 @@ public:
             unsigned int dis_right = ultra_right.update();
             unsigned int dis_up = ultra_up.update();
             unsigned int dis_back = ultra_back.update();
-            NFCqueue.call(&eeprom_driver, &NFCEEPROM::read_ndef_message);
+            BSP_ACCELERO_AccGetXYZ(pDataXYZ);
+            int x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER, z = pDataXYZ[2]*SCALE_MULTIPLIER;
+            // example.update();
 
             ThisThread::sleep_for(50);
-            int len = sprintf(acc_json, "distance: %d %d %d %d %d", dis, dis_right, dis_left, dis_up, dis_back);
+            int len = sprintf(acc_json, "distance: %d %d %d %d %d acc: %d %d %d", dis, dis_right, dis_left, dis_up, dis_back, x, y, z);
             // int len = sprintf(acc_json, "distance: %d", dis_back);
             printf("%s\n", acc_json);
             int response = _socket.send(acc_json, len);
-            response = _socket.send(ndef_msg, ndef_len);
+            // response = _socket.send(ndef_msg, ndef_len);
             // ++sample_num;
-            // BSP_ACCELERO_AccGetXYZ(pDataXYZ);
-            // float x = pDataXYZ[0]*SCALE_MULTIPLIER, y = pDataXYZ[1]*SCALE_MULTIPLIER,
-            // z = pDataXYZ[2]*SCALE_MULTIPLIER;
+            
             // BSP_GYRO_GetXYZ(pGyroDataXYZ);
             // printf("\nGYRO_X = %.2f\n", pGyroDataXYZ[0]);
             // printf("GYRO_Y = %.2f\n", pGyroDataXYZ[1]);

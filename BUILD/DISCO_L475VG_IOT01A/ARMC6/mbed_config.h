@@ -59,7 +59,7 @@
 #define MBED_CONF_ALT1250_PPP_BAUDRATE                                          115200                                                                                           // set by library:ALT1250_PPP
 #define MBED_CONF_ALT1250_PPP_PROVIDE_DEFAULT                                   0                                                                                                // set by library:ALT1250_PPP
 #define MBED_CONF_APP_HOSTNAME                                                  "192.168.50.103"                                                                                 // set by application
-#define MBED_CONF_APP_USE_TLS_SOCKET                                            1                                                                                                // set by application
+#define MBED_CONF_APP_USE_TLS_SOCKET                                            0                                                                                                // set by application
 #define MBED_CONF_ATMEL_RF_ASSUME_SPACED_SPI                                    1                                                                                                // set by library:atmel-rf[STM]
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED                                       7500000                                                                                          // set by library:atmel-rf
 #define MBED_CONF_ATMEL_RF_FULL_SPI_SPEED_BYTE_SPACING                          250                                                                                              // set by library:atmel-rf
@@ -308,12 +308,13 @@
 #define MBED_CONF_NANOSTACK_HAL_USE_KVSTORE                                     0                                                                                                // set by library:nanostack-hal
 #define MBED_CONF_NANOSTACK_LIBSERVICE_NSDYNMEM_TRACKER_ENABLED                 0                                                                                                // set by library:nanostack-libservice
 #define MBED_CONF_NANOSTACK_LIBSERVICE_PRESENT                                  1                                                                                                // set by library:nanostack-libservice
+#define MBED_CONF_NFCEEPROM                                                     1                                                                                                // set by library:M24SR-nfc
 #define MBED_CONF_NSAPI_ADD_EVENT_LISTENER_RETURN_CHANGE                        0                                                                                                // set by library:nsapi
 #define MBED_CONF_NSAPI_DEFAULT_MESH_TYPE                                       THREAD                                                                                           // set by library:nsapi
 #define MBED_CONF_NSAPI_DEFAULT_STACK                                           LWIP                                                                                             // set by library:nsapi
-#define MBED_CONF_NSAPI_DEFAULT_WIFI_PASSWORD                                   "305305abcd"                                                                                     // set by application[*]
+#define MBED_CONF_NSAPI_DEFAULT_WIFI_PASSWORD                                   "bbef9839f1"                                                                                     // set by application[*]
 #define MBED_CONF_NSAPI_DEFAULT_WIFI_SECURITY                                   WPA_WPA2                                                                                         // set by application[*]
-#define MBED_CONF_NSAPI_DEFAULT_WIFI_SSID                                       "esys305"                                                                                        // set by application[*]
+#define MBED_CONF_NSAPI_DEFAULT_WIFI_SSID                                       "Jimmy"                                                                                          // set by application[*]
 #define MBED_CONF_NSAPI_DNS_ADDRESSES_LIMIT                                     10                                                                                               // set by library:nsapi
 #define MBED_CONF_NSAPI_DNS_CACHE_SIZE                                          3                                                                                                // set by library:nsapi
 #define MBED_CONF_NSAPI_DNS_RESPONSE_WAIT_TIME                                  10000                                                                                            // set by library:nsapi
@@ -464,6 +465,7 @@
 #define MBED_CONF_UBLOX_N2XX_PROVIDE_DEFAULT                                    0                                                                                                // set by library:UBLOX_N2XX
 #define MBED_CONF_UBLOX_PPP_BAUDRATE                                            115200                                                                                           // set by library:UBLOX_PPP
 #define MBED_CONF_UBLOX_PPP_PROVIDE_DEFAULT                                     0                                                                                                // set by library:UBLOX_PPP
+#define MBED_CONF_X_NUCLEO_NFC01A1                                              0                                                                                                // set by library:M24SR-nfc
 #define MBED_CRC_TABLE_SIZE                                                     16                                                                                               // set by library:drivers
 #define MBED_LFS2_BLOCK_CYCLES                                                  1024                                                                                             // set by library:littlefs2
 #define MBED_LFS2_BLOCK_SIZE                                                    512                                                                                              // set by library:littlefs2

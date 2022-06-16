@@ -10,6 +10,7 @@ set(APP_TARGET mbed-os-example-sockets)
 include(${MBED_PATH}/tools/cmake/app.cmake)
 
 add_subdirectory(${MBED_PATH})
+add_subdirectory(EEPROMDriver/target) 
 
 add_executable(${APP_TARGET})
 
@@ -20,6 +21,9 @@ project(${APP_TARGET})
 target_include_directories(${APP_TARGET}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/source
+        ${CMAKE_CURRENT_SOURCE_DIR}/EEPROMDriver/
+        ${CMAKE_CURRENT_SOURCE_DIR}/EEPROMDriver/target
 )
 
 target_sources(${APP_TARGET}
@@ -32,6 +36,8 @@ target_link_libraries(${APP_TARGET}
         mbed-os
         mbed-netsocket
         mbed-mbedtls
+        mbed-events
+        mbed-nfc
 )
 
 mbed_set_post_build(${APP_TARGET})
